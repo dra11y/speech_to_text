@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This example listens for speech on the device microphone on your request.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This example recognizes words as you speak them and displays them. </string>
 </dict>
 </plist>

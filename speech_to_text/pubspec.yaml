@@ -11,7 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
   speech_to_text_platform_interface: ^2.0.1
-  speech_to_text_macos: ^1.0.2
+  # speech_to_text_macos: ^1.0.2
+  # speech_to_text_macos:
+  #   path: ../speech_to_text_macos
   json_annotation: ^4.0.0
   clock: ^1.0.1
   pedantic: ^1.9.2
@@ -41,4 +43,5 @@ flutter:
         pluginClass: SpeechToTextPlugin
         fileName: speech_to_text_web.dart
       macos:
-        default_package: speech_to_text_macos
+        pluginClass: SpeechToTextMacosPlugin
+        # default_package: speech_to_text_macos
