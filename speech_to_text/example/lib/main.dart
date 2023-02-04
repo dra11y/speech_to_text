@@ -129,8 +129,8 @@ class _SpeechSampleAppState extends State<SpeechSampleApp> {
     // on some devices.
     speech.listen(
       onResult: resultListener,
-      // listenFor: Duration(seconds: listenFor ?? 30),
-      // pauseFor: Duration(seconds: pauseFor ?? 3),
+      listenFor: listenFor == null ? null : Duration(seconds: listenFor),
+      pauseFor: pauseFor == null ? null : Duration(seconds: pauseFor),
       partialResults: true,
       localeId: _currentLocaleId,
       onSoundLevelChange: soundLevelListener,
