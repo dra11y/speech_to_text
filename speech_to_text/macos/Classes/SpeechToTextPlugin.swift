@@ -353,7 +353,7 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
                         self.invokeFlutter(SwiftSpeechToTextCallbackMethods.notifyStatus, arguments: SpeechToTextStatus.listening.rawValue)
                     }
                 }
-                print("play \(sound) \(sound.delegate)")
+                print("play \(sound) \(String(describing: sound.delegate))")
 
                 sound.play()
             }
@@ -593,7 +593,7 @@ extension SpeechToTextMacosPlugin: SFSpeechRecognitionTaskDelegate {
 @available(macOS 10.15, *)
 extension SpeechToTextMacosPlugin: AVAudioPlayerDelegate {
     public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-        print("player error: \(error)")
+        print("player error: \(String(describing: error))")
     }
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         print("audioPlayerDidFinishPlaying")
