@@ -63,7 +63,6 @@ enum SpeechToTextError: Error {
     case runtimeError(String)
 }
 
-// public class SwiftSpeechToTextPlugin: NSObject, FlutterPlugin {
 @available(macOS 10.15, *)
 public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
     private var channel: FlutterMethodChannel
@@ -215,7 +214,6 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
             do {
                 player = try AVAudioPlayer(contentsOf: soundUrl)
                 player?.delegate = self
-                print("player delegate = \(player?.delegate)")
             } catch {
                 // no audio
             }
@@ -361,7 +359,10 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
             }
 
             audioEngine.reset()
-            if inputNode?.inputFormat(forBus: 0).channelCount == 0 {
+            guard
+                let inputNode = inputNode,
+                inputNode.inputFormat(forBus: self.busForNodeTap).channelCount > 0
+            else {
                 throw SpeechToTextError.runtimeError("Not enough available inputs.")
             }
             self.currentRequest = SFSpeechAudioBufferRecognitionRequest()
@@ -373,8 +374,8 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
                 sendBoolResult(false, result)
                 return
             }
-            currentRequest.shouldReportPartialResults = true
-            currentRequest.requiresOnDeviceRecognition = true
+            currentRequest.shouldReportPartialResults = partialResults
+            currentRequest.requiresOnDeviceRecognition = onDevice
             switch listenMode {
             case ListenMode.dictation:
                 currentRequest.taskHint = SFSpeechRecognitionTaskHint.dictation
@@ -387,8 +388,11 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
             }
 
             currentTask = recognizer.recognitionTask(with: currentRequest, delegate: self)
-            let recordingFormat = inputNode?.outputFormat(forBus: busForNodeTap)
-            let fmt = AVAudioFormat(commonFormat: recordingFormat!.commonFormat, sampleRate: recordingFormat!.sampleRate, channels: recordingFormat!.channelCount, interleaved: recordingFormat!.isInterleaved)
+            let recordingFormat = inputNode.outputFormat(forBus: busForNodeTap)
+
+            /// TODO: Mixdown with `AVAudioMixerNode`, if possible. Tried and crashed.
+            /// For now, setting channels to 2 seems to fix 4-channel input not recognizing.
+            let fmt = AVAudioFormat(commonFormat: recordingFormat.commonFormat, sampleRate: recordingFormat.sampleRate, channels: 2, interleaved: recordingFormat.isInterleaved)
             self.inputNode?.installTap(onBus: self.busForNodeTap, bufferSize: self.speechBufferSize, format: fmt) { (buffer: AVAudioPCMBuffer, _: AVAudioTime) in
                 currentRequest.append(buffer)
                 self.updateSoundLevel(buffer: buffer)
