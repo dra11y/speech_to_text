@@ -403,6 +403,7 @@ class SpeechToText {
       partialResults = true,
       onDevice = false,
       ListenMode listenMode = ListenMode.confirmation,
+      List<String>? contextualStrings,
       sampleRate = 0}) async {
     if (!_initWorked) {
       throw SpeechToTextNotInitializedException();
@@ -425,7 +426,8 @@ class SpeechToText {
           onDevice: onDevice,
           listenMode: listenMode.index,
           sampleRate: sampleRate,
-          localeId: localeId);
+          localeId: localeId,
+          contextualStrings: contextualStrings);
       if (started) {
         _listenStartedAt = clock.now().millisecondsSinceEpoch;
         _lastSpeechEventAt = _listenStartedAt;

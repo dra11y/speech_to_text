@@ -143,7 +143,8 @@ abstract class SpeechToTextPlatform extends PlatformInterface {
       partialResults = true,
       onDevice = false,
       int listenMode = 0,
-      sampleRate = 0}) {
+      sampleRate = 0,
+      List<String>? contextualStrings}) {
     throw UnimplementedError('listen() has not been implemented.');
   }
 

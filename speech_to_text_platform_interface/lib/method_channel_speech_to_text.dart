@@ -102,12 +102,14 @@ class MethodChannelSpeechToText extends SpeechToTextPlatform {
       partialResults = true,
       onDevice = false,
       int listenMode = 0,
-      sampleRate = 0}) async {
+      sampleRate = 0,
+      List<String>? contextualStrings}) async {
     Map<String, dynamic> listenParams = {
       "partialResults": partialResults,
       "onDevice": onDevice,
       "listenMode": listenMode,
       "sampleRate": sampleRate,
+      "contextualStrings": contextualStrings,
     };
     if (null != localeId) {
       listenParams["localeId"] = localeId;

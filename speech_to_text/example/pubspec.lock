@@ -175,10 +175,9 @@ packages:
   speech_to_text_platform_interface:
     dependency: transitive
     description:
-      name: speech_to_text_platform_interface
-      sha256: "13d90215a7554b9a8c1ce47c0a1739af8eacd2cf196ca66351e54dfd2172746d"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../speech_to_text_platform_interface"
+      relative: true
+    source: path
     version: "2.0.1"
   stack_trace:
     dependency: transitive
@@ -229,5 +228,5 @@ packages:
     source: hosted
     version: "2.1.4"
 sdks:
-  dart: ">=2.18.0 <4.0.0"
+  dart: ">=2.18.0 <3.0.0"
   flutter: ">=1.16.0"

@@ -122,6 +122,10 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
             if let localeParam = argsArr["localeId"] as? String {
                 localeStr = localeParam
             }
+            var contextualStrings: [String]?
+            if let contextualStringsParam = argsArr["contextualStrings"] as? [String] {
+                contextualStrings = contextualStringsParam
+            }
             guard let listenMode = ListenMode(rawValue: listenModeIndex) else {
                 DispatchQueue.main.async {
                     result(FlutterError(code: SpeechToTextErrors.missingOrInvalidArg.rawValue,
@@ -131,7 +135,7 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
                 return
             }
 
-            listenForSpeech(result, localeStr: localeStr, partialResults: partialResults, onDevice: onDevice, listenMode: listenMode, sampleRate: sampleRate)
+            listenForSpeech(result, localeStr: localeStr, partialResults: partialResults, onDevice: onDevice, listenMode: listenMode, sampleRate: sampleRate, contextualStrings: contextualStrings)
         case SwiftSpeechToTextMethods.stop.rawValue:
             stopSpeech(result)
         case SwiftSpeechToTextMethods.cancel.rawValue:
@@ -317,7 +321,7 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
         listening = false
     }
 
-    private func listenForSpeech(_ result: @escaping FlutterResult, localeStr: String?, partialResults: Bool, onDevice: Bool, listenMode: ListenMode, sampleRate: Int) {
+    private func listenForSpeech(_ result: @escaping FlutterResult, localeStr: String?, partialResults: Bool, onDevice: Bool, listenMode: ListenMode, sampleRate: Int, contextualStrings: [String]?) {
         
         if currentTask != nil || listening {
             print("listen fail")
@@ -375,6 +379,10 @@ public class SpeechToTextMacosPlugin: NSObject, FlutterPlugin {
                 return
             }
             currentRequest.shouldReportPartialResults = partialResults
+            if let contextualStrings = contextualStrings {
+                print("listen contextualStrings = \(contextualStrings)")
+                currentRequest.contextualStrings = contextualStrings
+            }
             currentRequest.requiresOnDeviceRecognition = onDevice
             switch listenMode {
             case ListenMode.dictation:
@@ -540,7 +548,7 @@ extension SpeechToTextMacosPlugin: SFSpeechRecognitionTaskDelegate {
         os_log("Canceled reading audio", log: pluginLog, type: .debug)
         invokeFlutter(SwiftSpeechToTextCallbackMethods.notifyStatus, arguments: SpeechToTextStatus.notListening.rawValue)
     }
-
+   
     public func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
         reportError(source: "FinishSuccessfully", error: task.error)
         os_log("FinishSuccessfully", log: pluginLog, type: .debug)
